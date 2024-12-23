@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>智慧助手專區</title>
+    <style>
+      /* 基本樣式 */
+      body {
+        font-family: "Roboto", sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f9f9f9;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+
+      /* 頁面容器 */
+      .container {
+        margin: auto;
+        width: 80%;
+        flex: 1;
+      }
+
+      /* 標題 */
+      h1 {
+        color: #d04a02;
+        text-align: center;
+        margin-bottom: 30px;
+        font-weight: bold;
+        font-size: 28px;
+        letter-spacing: 1px;
+      }
+
+      /* 頂部操作按鈕 */
+      .top-buttons {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      .top-buttons a,
+      .top-buttons button,
+      .modal button {
+        background-color: #ffb600;
+        color: white;
+        text-decoration: none;
+        padding: 10px 20px;
+        border-radius: 25px;
+        font-weight: bold;
+        font-size: 14px;
+        border: none;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        cursor: pointer;
+        transition: transform 0.2s ease, background-color 0.3s ease;
+      }
+
+      .top-buttons button {
+        background-color: #e0301e;
+      }
+
+      .top-buttons a:hover,
+      .top-buttons button:hover,
+      .modal button:hover {
+        transform: scale(1.05);
+        background-color: #c9290f;
+      }
+
+      /* 大分類卡片 */
+      .category-card {
+        border: 1px solid #dedede;
+        border-radius: 10px;
+        background-color: white;
+        padding: 20px;
+        max-width: 100%;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        margin-bottom: 20px;
+      }
+
+      .category-card:hover {
+        background-color: #f7f7f7;
+      }
+
+      .category-card h2 {
+        color: #d04a02;
+        font-size: 18px;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .category-card span {
+        color: #dedede;
+        font-size: 16px;
+        transform: rotate(0);
+        transition: transform 0.3s ease;
+      }
+
+      .subcategory {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.5s ease, opacity 0.5s ease;
+        opacity: 0;
+        margin-top: 10px;
+      }
+
+      .subcategory.active {
+        max-height: 500px;
+        opacity: 1;
+      }
+
+      .subcategory ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .subcategory li {
+        margin-bottom: 8px;
+      }
+
+      .subcategory a {
+        color: #d04a02;
+        text-decoration: none;
+        font-size: 14px;
+      }
+
+      /* 彈窗樣式 */
+      .modal {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0.8); /* 初始狀態縮小 */
+        background-color: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+        opacity: 0; /* 初始狀態透明 */
+        transition: opacity 0.3s ease, transform 0.3s ease;
+
+        /* 設置大小 */
+        width: 50%;
+        max-width: 500px;
+        min-width: 300px;
+        max-height: 80vh; /* 避免超出螢幕高度 */
+        overflow-y: auto; /* 避免內容過多溢出 */
+      }
+
+      .modal.active {
+        display: block;
+        opacity: 1; /* 顯示時完全不透明 */
+        transform: translate(-50%, -50%) scale(1); /* 顯示時放大至正常大小 */
+      }
+
+      /* 背景遮罩 */
+      .overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+      }
+
+      .overlay.active {
+        display: block;
+      }
+
+      /* 頁尾樣式 */
+      footer {
+        background-color: #f9f9f9;
+        color: #7a7a7a;
+        text-align: center;
+        padding: 10px;
+        font-size: 12px;
+        border-top: 1px solid #dedede;
+        margin-top: 20px;
+      }
+
+      /* 響應式設計 */
+      @media screen and (max-width: 1024px) {
+        .container {
+          width: 80%;
+        }
+
+        h1 {
+          font-size: 26px;
+        }
+      }
+
+      @media screen and (max-width: 768px) {
+        .container {
+          width: 80%;
+        }
+
+        .top-buttons .button {
+          width: 100%;
+        }
+      }
+
+      @media screen and (max-width: 480px) {
+        .container {
+          max-width: 90%;
+        }
+        h1 {
+          font-size: 22px;
+        }
+
+        .category-card h2 {
+          font-size: 16px;
+        }
+
+        .top-buttons {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .top-buttons a,
+        .top-buttons button {
+          width: 100%;
+        }
+
+        .top-buttons a {
+          text-align: center;
+          padding: 10px 0px;
+        }
+
+        .subcategory a {
+          font-size: 12px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- 頁面標題 -->
+      <h1>智能小助手專區</h1>
+
+      <!-- 頂部操作按鈕 -->
+      <div class="top-buttons">
+        <a href="/feedback-form-url">提交問題回饋</a>
+        <button onclick="showInstructions()">操作說明</button>
+      </div>
+
+      <!-- 大分類卡片 -->
+      <div
+        class="category-card"
+        onclick="toggleSubcategories('ifs-subcategories')"
+      >
+        <h2>
+          <span id="ifs-arrow">▼</span>
+          IFS
+        </h2>
+        <div class="subcategory" id="ifs-subcategories">
+          <ul>
+            <li><a href="/ifs-chatbot-url-1">IFS 子分類 1</a></li>
+            <li><a href="/ifs-chatbot-url-2">IFS 子分類 2</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div
+        class="category-card"
+        onclick="toggleSubcategories('tls-subcategories')"
+      >
+        <h2>
+          <span id="tls-arrow">▼</span>
+          TLS
+        </h2>
+        <div class="subcategory" id="tls-subcategories">
+          <ul>
+            <li><a href="/tls-chatbot-url-1">TLS 子分類 1</a></li>
+            <li><a href="/tls-chatbot-url-2">TLS 子分類 2</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div
+        class="category-card"
+        onclick="toggleSubcategories('all-subcategories')"
+      >
+        <h2>
+          <span id="all-arrow">▼</span>
+          ALL
+        </h2>
+        <div class="subcategory" id="all-subcategories">
+          <ul>
+            <li><a href="/all-chatbot-url-1">ALL 子分類 1</a></li>
+            <li><a href="/all-chatbot-url-2">ALL 子分類 2</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- 彈窗 -->
+    <div class="modal" id="instructions-modal">
+      <h2>操作說明</h2>
+      <p>點擊分類名稱展開子分類，選擇對應的 ChatBot。</p>
+      <button onclick="closeInstructions()">關閉</button>
+    </div>
+    <div class="overlay" id="modal-overlay" onclick="closeInstructions()"></div>
+
+    <!-- 頁尾 -->
+    <footer>若有其他問題，請聯繫 AI&T 團隊。</footer>
+
+    <script>
+      function toggleSubcategories(id) {
+        const subcategories = document.getElementById(id);
+        const arrow = document.getElementById(`${id.split("-")[0]}-arrow`);
+        subcategories.classList.toggle("active");
+        arrow.style.transform = subcategories.classList.contains("active")
+          ? "rotate(180deg)"
+          : "rotate(0)";
+      }
+
+      function showInstructions() {
+        document.getElementById("instructions-modal").classList.add("active");
+        document.getElementById("modal-overlay").classList.add("active");
+      }
+
+      function closeInstructions() {
+        document
+          .getElementById("instructions-modal")
+          .classList.remove("active");
+        document.getElementById("modal-overlay").classList.remove("active");
+      }
+    </script>
+  </body>
+</html>
