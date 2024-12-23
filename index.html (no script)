@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>智慧助手專區</title>
+    <style>
+      /* === 基本樣式 === */
+      body {
+        font-family: "Roboto", sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f9f9f9;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+
+      .container {
+        margin: auto;
+        width: 80%;
+        flex: 1;
+      }
+
+      h1 {
+        color: #d04a02;
+        text-align: center;
+        margin-bottom: 30px;
+        font-weight: bold;
+        font-size: 28px;
+        letter-spacing: 1px;
+      }
+
+      /* === 頂部操作按鈕區 === */
+      .top-buttons {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+      /* 公用按鈕樣式：anchor、button、及 modal 內的按鈕 */
+      .top-buttons a,
+      .top-buttons button,
+      .modal button {
+        background-color: #ffb600;
+        color: white;
+        text-decoration: none;
+        padding: 10px 20px;
+        border-radius: 25px;
+        font-weight: bold;
+        font-size: 14px;
+        border: none;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        cursor: pointer;
+        transition: transform 0.2s ease, background-color 0.3s ease;
+      }
+      /* 特別指定 .top-buttons 裡的 button 為紅色 */
+      .top-buttons button {
+        background-color: #e0301e;
+      }
+      /* hover 效果：略微放大 + 背景加深 */
+      .top-buttons a:hover,
+      .top-buttons button:hover,
+      .modal button:hover {
+        transform: scale(1.05);
+        background-color: #c9290f;
+      }
+
+      /* === 大分類區 === */
+      .category-group {
+        margin-bottom: 20px;
+      }
+
+      .category-card {
+        border: 1px solid #dedede;
+        border-radius: 10px;
+        background-color: white;
+        padding: 20px;
+        max-width: 100%;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        display: block;
+      }
+      .category-card:hover {
+        background-color: #f7f7f7;
+      }
+
+      .category-card h2 {
+        color: #d04a02;
+        font-size: 18px;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .arrow {
+        color: #dedede;
+        font-size: 16px;
+        transform: rotate(0);
+        transition: transform 0.3s ease;
+      }
+
+      /* 隱藏 checkbox */
+      .category-group input[type="checkbox"] {
+        display: none;
+      }
+
+      /* 下拉展開動畫 */
+      .subcategory {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.5s ease, opacity 0.5s ease;
+        opacity: 0;
+        margin-top: 10px;
+      }
+      /* checkbox 被勾選時，展開對應的子分類（同一組內） */
+      .category-group input[type="checkbox"]:checked ~ .subcategory {
+        max-height: 500px;
+        opacity: 1;
+      }
+      /* 箭頭旋轉（同一組） */
+      .category-group
+        input[type="checkbox"]:checked
+        + .category-card
+        h2
+        .arrow {
+        transform: rotate(180deg);
+      }
+
+      /* 子分類清單 */
+      .subcategory ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+      .subcategory li {
+        margin-bottom: 8px;
+      }
+      .subcategory a {
+        color: #d04a02;
+        text-decoration: none;
+        font-size: 14px;
+      }
+
+      /* === 彈窗 & 遮罩 === */
+      #modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+      }
+      /* 利用 :target 來顯示彈窗 */
+      #modal-overlay:target {
+        display: block;
+      }
+
+      .modal {
+        position: relative;
+        background-color: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        width: 50%;
+        max-width: 500px;
+        min-width: 300px;
+        max-height: 80vh; /* 避免超出螢幕高度 */
+        overflow-y: auto; /* 避免內容過多溢出 */
+        margin: 100px auto; /* 置中 */
+      }
+
+      /* 關閉按鈕：直接套用 .modal button{} */
+      .close-btn {
+        margin-top: 20px;
+        display: inline-block;
+      }
+
+      /* === 頁尾 === */
+      footer {
+        background-color: #f9f9f9;
+        color: #7a7a7a;
+        text-align: center;
+        padding: 10px;
+        font-size: 12px;
+        border-top: 1px solid #dedede;
+        margin-top: 20px;
+      }
+
+      /* === RWD === */
+      @media screen and (max-width: 1024px) {
+        .container {
+          width: 80%;
+        }
+        h1 {
+          font-size: 26px;
+        }
+      }
+
+      @media screen and (max-width: 768px) {
+        .container {
+          width: 80%;
+        }
+      }
+
+      @media screen and (max-width: 480px) {
+        .container {
+          max-width: 90%;
+        }
+        h1 {
+          font-size: 22px;
+        }
+        .category-card h2 {
+          font-size: 16px;
+        }
+        .top-buttons {
+          flex-direction: column;
+          align-items: center;
+        }
+        .top-buttons a,
+        .top-buttons button {
+          width: 100%;
+          text-align: center;
+          padding: 10px 0px;
+        }
+        .subcategory a {
+          font-size: 12px;
+        }
+        .modal {
+          width: 80%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- 頁面標題 -->
+      <h1>智能小助手專區</h1>
+
+      <!-- 頂部操作按鈕 -->
+      <div class="top-buttons">
+        <!-- 第一顆按鈕 (anchor) → 預設 #ffb600 -->
+        <a href="/feedback-form-url">提交問題回饋</a>
+        <!-- 第二顆按鈕 (button) → 預設 #e0301e -->
+        <button onclick="location.href='#modal-overlay'">操作說明</button>
+      </div>
+
+      <!-- IFS 大分類 -->
+      <div class="category-group">
+        <input type="checkbox" id="ifs-toggle" />
+        <label for="ifs-toggle" class="category-card">
+          <h2>
+            <span class="arrow">▼</span>
+            IFS
+          </h2>
+        </label>
+        <div class="subcategory">
+          <ul>
+            <li><a href="#">IFS 子分類 1</a></li>
+            <li><a href="#">IFS 子分類 2</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- TLS 大分類 -->
+      <div class="category-group">
+        <input type="checkbox" id="tls-toggle" />
+        <label for="tls-toggle" class="category-card">
+          <h2>
+            <span class="arrow">▼</span>
+            TLS
+          </h2>
+        </label>
+        <div class="subcategory">
+          <ul>
+            <li><a href="#">TLS 子分類 1</a></li>
+            <li><a href="#">TLS 子分類 2</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- ALL 大分類 -->
+      <div class="category-group">
+        <input type="checkbox" id="all-toggle" />
+        <label for="all-toggle" class="category-card">
+          <h2>
+            <span class="arrow">▼</span>
+            ALL
+          </h2>
+        </label>
+        <div class="subcategory">
+          <ul>
+            <li><a href="#">ALL 子分類 1</a></li>
+            <li><a href="#">ALL 子分類 2</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- 彈窗 (利用 :target) -->
+    <div id="modal-overlay">
+      <div class="modal">
+        <h2>操作說明</h2>
+        <p>點擊分類名稱展開子分類，選擇對應的 ChatBot。</p>
+        <!-- 關閉按鈕 (button) 會使用同樣的按鈕樣式，藉由把 href="#"(空) 來結束 :target -->
+        <button class="close-btn" onclick="location.href='#'">關閉</button>
+      </div>
+    </div>
+
+    <!-- 頁尾 -->
+    <footer>若有其他問題，請聯繫 AI&T 團隊。</footer>
+  </body>
+</html>
