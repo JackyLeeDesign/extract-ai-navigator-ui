@@ -38,6 +38,7 @@
         gap: 10px;
         margin-bottom: 20px;
       }
+
       /* 公用按鈕樣式：anchor、button、及 modal 內的按鈕 */
       .top-buttons a,
       .top-buttons button,
@@ -54,10 +55,12 @@
         cursor: pointer;
         transition: transform 0.2s ease, background-color 0.3s ease;
       }
+
       /* 特別指定 .top-buttons 裡的 button 為紅色 */
       .top-buttons button {
         background-color: #e0301e;
       }
+
       /* hover 效果：略微放大 + 背景加深 */
       .top-buttons a:hover,
       .top-buttons button:hover,
@@ -82,6 +85,7 @@
         transition: background-color 0.3s ease;
         display: block;
       }
+
       .category-card:hover {
         background-color: #f7f7f7;
       }
@@ -115,11 +119,13 @@
         opacity: 0;
         margin-top: 10px;
       }
+
       /* checkbox 被勾選時，展開對應的子分類（同一組內） */
       .category-group input[type="checkbox"]:checked ~ .subcategory {
         max-height: 500px;
         opacity: 1;
       }
+
       /* 箭頭旋轉（同一組） */
       .category-group
         input[type="checkbox"]:checked
@@ -155,6 +161,7 @@
         background-color: rgba(0, 0, 0, 0.5);
         z-index: 999;
       }
+
       /* 利用 :target 來顯示彈窗 */
       #modal-overlay:target {
         display: block;
@@ -244,7 +251,9 @@
       <!-- 頂部操作按鈕 -->
       <div class="top-buttons">
         <!-- 第一顆按鈕 (anchor) → 預設 #ffb600 -->
-        <a href="/feedback-form-url">提交問題回饋</a>
+        <a href="https://www.google.com/search?q=提交問題回饋" target="_blank"
+          >提交問題回饋</a
+        >
         <!-- 第二顆按鈕 (button) → 預設 #e0301e -->
         <button onclick="location.href='#modal-overlay'">操作說明</button>
       </div>
@@ -260,8 +269,20 @@
         </label>
         <div class="subcategory">
           <ul>
-            <li><a href="#">IFS 子分類 1</a></li>
-            <li><a href="#">IFS 子分類 2</a></li>
+            <li>
+              <a
+                href="https://www.google.com/search?q=IFS+子分類+1"
+                target="_blank"
+                >IFS 子分類 1</a
+              >
+            </li>
+            <li>
+              <a
+                href="https://www.google.com/search?q=IFS+子分類+2"
+                target="_blank"
+                >IFS 子分類 2</a
+              >
+            </li>
           </ul>
         </div>
       </div>
@@ -277,8 +298,20 @@
         </label>
         <div class="subcategory">
           <ul>
-            <li><a href="#">TLS 子分類 1</a></li>
-            <li><a href="#">TLS 子分類 2</a></li>
+            <li>
+              <a
+                href="https://www.google.com/search?q=TLS+子分類+1"
+                target="_blank"
+                >TLS 子分類 1</a
+              >
+            </li>
+            <li>
+              <a
+                href="https://www.google.com/search?q=TLS+子分類+2"
+                target="_blank"
+                >TLS 子分類 2</a
+              >
+            </li>
           </ul>
         </div>
       </div>
@@ -294,8 +327,20 @@
         </label>
         <div class="subcategory">
           <ul>
-            <li><a href="#">ALL 子分類 1</a></li>
-            <li><a href="#">ALL 子分類 2</a></li>
+            <li>
+              <a
+                href="https://www.google.com/search?q=ALL+子分類+1"
+                target="_blank"
+                >ALL 子分類 1</a
+              >
+            </li>
+            <li>
+              <a
+                href="https://www.google.com/search?q=ALL+子分類+2"
+                target="_blank"
+                >ALL 子分類 2</a
+              >
+            </li>
           </ul>
         </div>
       </div>
